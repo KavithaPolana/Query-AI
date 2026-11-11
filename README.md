@@ -1,16 +1,84 @@
-# React + Vite
+# QueryAI – Natural Language to SQL
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+QueryAI is an AI-powered database assistant that converts natural language questions into SQL queries using Google's Gemini API. Users can review and edit generated SQL, execute queries, and explore database results through a simple web interface.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Natural Language to SQL:** Generate MySQL queries from plain English questions using Gemini AI.
+- **Editable SQL:** Review and modify generated SQL before execution.
+- **SQL Validation:** Validate queries and restrict execution to safe, read-only SELECT statements and approved tables.
+- **Query Execution:** Execute SQL queries and display results in a structured table.
+- **CSV Export:** Download query results as CSV files.
+- **Schema Explorer:** Explore database tables, column names, data types, and keys.
+- **Query History:** View and reload recently executed queries.
+- **Query Caching:** Cache validated SQL generation results to reduce repeated Gemini API calls.
+- **Error Handling:** Handle invalid questions, SQL errors, and empty results with understandable messages.
 
-## React Compiler
+## Technology Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+| Component | Technologies |
+|---|---|
+| Frontend | React.js, Vite, CSS |
+| Backend | Python, Flask |
+| Database | MySQL |
+| AI Integration | Google Gemini API |
+| SQL Validation | SQLGlot |
+| API Communication | REST API, Fetch |
 
-## Expanding the ESLint configuration
+## Project Structure
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```text
+QueryAI/
+│
+├── backend/
+│   ├── app.py
+│   ├── requirements.txt
+│   ├── .env.example
+│   ├── database/
+│   │   ├── __init__.py
+│   │   ├── db.py
+│   │   └── schema.sql
+│   └── services/
+│       ├── __init__.py
+│       ├── sql_generator.py
+│       └── sql_validator.py
+│
+├── frontend/
+│   ├── public/
+│   │   └── queryai.svg
+│   ├── src/
+│   │   ├── App.jsx
+│   │   ├── App.css
+│   │   ├── main.jsx
+│   │   └── index.css
+│   ├── index.html
+│   └── package.json
+│
+├── .gitignore
+└── README.md
+```
+
+## Database Setup
+
+1. Install MySQL Server and MySQL Workbench.
+2. Create a database named `queryai_db`.
+3. Execute the SQL statements in `backend/database/schema.sql` to create the required tables and data, if included.
+4. Configure your database credentials in `backend/.env`.
+
+## Backend Setup
+
+Open a terminal:
+
+```powershell
+cd backend
+python -m venv venv
+.\venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+Create a `.env` file using `.env.example` and provide your own credentials:
+
+```env
+DB_HOST=localhost
+DB_USER=root
+DB
