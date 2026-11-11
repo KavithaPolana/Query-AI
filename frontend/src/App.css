@@ -85,14 +85,13 @@ button:disabled {
   width: min(1250px, 94%);
   margin: 45px auto;
 
-  /* Two-column page layout */
   display: grid;
   grid-template-columns: minmax(0, 1.8fr) minmax(280px, 1fr);
   column-gap: 22px;
   align-items: start;
 }
 
-/* Welcome heading remains full width */
+/* Welcome heading */
 .welcome {
   grid-column: 1 / -1;
   text-align: center;
@@ -116,12 +115,13 @@ button:disabled {
   line-height: 1.6;
 }
 
-/* Main question and result cards stay on the left */
-.workspace,
-.result-section,
-.alert {
+/* Left side content */
+.left-column {
   grid-column: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 }
 
 .workspace,
@@ -134,14 +134,57 @@ button:disabled {
   margin-bottom: 22px;
 }
 
-/* Schema Explorer and Query History move to the right */
-.history-section {
-  grid-column: 2;
+.workspace,
+.result-section {
+  width: 100%;
   min-width: 0;
-  align-self: start;
 }
 
-/* Footer remains full width */
+/* Alerts */
+.alert {
+  padding: 13px 16px;
+  border-radius: 8px;
+  margin-bottom: 18px;
+  font-size: 13px;
+}
+
+.error {
+  background: #fff0f0;
+  color: #c53030;
+}
+
+.success {
+  background: #ecfdf4;
+  color: #147a4b;
+}
+
+/* Right sidebar */
+.sidebar {
+  grid-column: 2;
+  grid-row: 2;
+  min-width: 0;
+  align-self: start;
+
+  position: sticky;
+  top: 20px;
+
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+
+  scrollbar-width: thin;
+  scrollbar-color: #d5d9e3 transparent;
+}
+
+.sidebar .history-section {
+  width: 100%;
+  margin-bottom: 22px;
+}
+
+.sidebar .history-section:last-child {
+  margin-bottom: 0;
+}
+
+/* Footer */
 footer {
   grid-column: 1 / -1;
   text-align: center;
@@ -246,23 +289,6 @@ footer {
   font-size: 13px;
 }
 
-.alert {
-  padding: 13px 16px;
-  border-radius: 8px;
-  margin-bottom: 18px;
-  font-size: 13px;
-}
-
-.error {
-  background: #fff0f0;
-  color: #c53030;
-}
-
-.success {
-  background: #ecfdf4;
-  color: #147a4b;
-}
-
 .table-container {
   overflow-x: auto;
 }
@@ -286,6 +312,16 @@ th {
   color: #566176;
 }
 
+.result-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.result-actions .execute-button {
+  margin-top: 0;
+}
+
 .history-item {
   width: 100%;
   display: flex;
@@ -303,11 +339,13 @@ th {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  min-width: 0;
 }
 
 .history-item strong {
   color: #283347;
   font-size: 13px;
+  overflow-wrap: anywhere;
 }
 
 .history-item span {
@@ -323,7 +361,6 @@ th {
   column-gap: 10px;
   padding: 12px 8px;
   border-bottom: 1px solid #e5e7eb;
-  box-sizing: border-box;
   min-width: 0;
 }
 
@@ -344,7 +381,7 @@ th {
   justify-self: start;
 }
 
-/* Smaller screens: stack the cards */
+/* Smaller screens */
 @media (max-width: 850px) {
   .main-container {
     width: min(950px, 92%);
@@ -353,12 +390,17 @@ th {
   }
 
   .welcome,
-  .workspace,
-  .result-section,
-  .alert,
-  .history-section,
+  .left-column,
+  .sidebar,
   footer {
     grid-column: 1;
+  }
+
+  .sidebar {
+    grid-row: auto;
+    position: static;
+    max-height: none;
+    overflow: visible;
   }
 
   .welcome h2 {
@@ -388,5 +430,9 @@ th {
 
   .schema-column .readonly-badge {
     grid-column: 1 / -1;
+  }
+
+  .result-actions {
+    flex-wrap: wrap;
   }
 }

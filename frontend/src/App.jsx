@@ -232,236 +232,252 @@ function App() {
           </p>
         </section>
 
-        <section className="workspace">
-          <div className="section-heading">
-            <h3>Ask a question</h3>
-            <button className="text-button" onClick={resetWorkspace}>
-              Clear workspace
-            </button>
-          </div>
+        {/* LEFT SIDE: Question, SQL and Results */}
+        <div className="left-column">
 
-          <textarea
-            className="question-input"
-            value={question}
-            onChange={(e) => setQuestion(e.target.value)}
-            placeholder="Example: Show the top 5 customers by total order value..."
-            rows={3}
-          />
-
-          <div className="examples">
-            <span>Try asking:</span>
-            {examples.map((example) => (
-              <button
-                key={example}
-                onClick={() => setQuestion(example)}
-              >
-                {example}
-              </button>
-            ))}
-          </div>
-
-          <button
-            className="primary-button"
-            onClick={generateSQL}
-            disabled={loading}
-          >
-            {loading ? "Generating SQL..." : "✦ Generate SQL"}
-          </button>
-        </section>
-
-        {error && (
-          <div className="alert error">
-            <strong>Error:</strong> {error}
-          </div>
-        )}
-
-        {message && (
-          <div className="alert success">
-            {message}
-          </div>
-        )}
-
-        {generated && (
-          <section className="result-section">
+          <section className="workspace">
             <div className="section-heading">
-              <div>
-                <h3>Generated SQL</h3>
-                <p>Review or edit the query before running it.</p>
-              </div>
-              <span className="readonly-badge">SELECT ONLY</span>
+              <h3>Ask a question</h3>
+              <button className="text-button" onClick={resetWorkspace}>
+                Clear workspace
+              </button>
             </div>
 
             <textarea
-              className="sql-editor"
-              value={sql}
-              onChange={(e) => setSql(e.target.value)}
-              rows={8}
-              spellCheck={false}
+              className="question-input"
+              value={question}
+              onChange={(e) => setQuestion(e.target.value)}
+              placeholder="Example: Show the top 5 customers by total order value..."
+              rows={3}
             />
 
-            <button
-              className="execute-button"
-              onClick={executeSQL}
-              disabled={executing}
-            >
-              {executing ? "Executing..." : "▶ Execute Query"}
-            </button>
-          </section>
-        )}
-
-        {hasResults && (
-          <section className="result-section">
-            <div className="section-heading">
-              <div>
-                <h3>Query Results</h3>
-                <p>{rows.length} records returned</p>
-              </div>
-
-              <div className="result-actions">
-                <span className="result-count">
-                  {rows.length} Rows
-                </span>
-
-                {columns.length > 0 && (
-                  <button
-                    className="execute-button"
-                    onClick={downloadCSV}
-                  >
-                    ↓ Download CSV
-                  </button>
-                )}
-              </div>
-            </div>
-
-            {columns.length === 0 ? (
-              <p>No columns or records returned.</p>
-            ) : rows.length === 0 ? (
-              <p>No records found for this query.</p>
-            ) : (
-              <div className="table-container">
-                <table>
-                  <thead>
-                    <tr>
-                      {columns.map((column) => (
-                        <th key={column}>{column}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {rows.map((row, index) => (
-                      <tr key={index}>
-                        {columns.map((column) => (
-                          <td key={column}>
-                            {row[column] === null
-                              ? "NULL"
-                              : typeof row[column] === "object"
-                                ? JSON.stringify(row[column])
-                                : String(row[column])}
-                          </td>
-                        ))}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </section>
-        )}
-
-        <section className="history-section">
-          <div className="section-heading">
-            <div>
-              <h3>Schema Explorer</h3>
-              <p>Explore available database tables and columns.</p>
-            </div>
-
-            <button
-              className="text-button"
-              onClick={loadSchema}
-              disabled={schemaLoading}
-            >
-              {schemaLoading ? "Loading..." : "↻ Refresh"}
-            </button>
-          </div>
-
-          {Object.keys(schema).length === 0 ? (
-            <p>{schemaLoading ? "Loading database schema..." : "No tables found."}</p>
-          ) : (
-            <div className="schema-list">
-              {Object.entries(schema).map(([tableName, tableColumns]) => (
-                <div className="schema-table" key={tableName}>
-                  <button
-                    className="history-item"
-                    onClick={() =>
-                      setExpandedTable(
-                        expandedTable === tableName ? "" : tableName
-                      )
-                    }
-                  >
-                    <div>
-                      <strong>▣ {tableName}</strong>
-                      <span>{tableColumns.length} columns</span>
-                    </div>
-                    <span>
-                      {expandedTable === tableName ? "−" : "+"}
-                    </span>
-                  </button>
-
-                  {expandedTable === tableName && (
-                    <div className="schema-columns">
-                      {tableColumns.map((column) => (
-                        <div
-                          className="schema-column"
-                          key={column.column}
-                        >
-                          <span>{column.column}</span>
-                          <span>{column.type}</span>
-                          {column.key && (
-                            <span className="readonly-badge">
-                              {column.key === "PRI" ? "PRIMARY KEY" : column.key}
-                            </span>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
+            <div className="examples">
+              <span>Try asking:</span>
+              {examples.map((example) => (
+                <button
+                  key={example}
+                  onClick={() => setQuestion(example)}
+                >
+                  {example}
+                </button>
               ))}
             </div>
-          )}
-        </section>
 
-        {history.length > 0 && (
+            <button
+              className="primary-button"
+              onClick={generateSQL}
+              disabled={loading}
+            >
+              {loading ? "Generating SQL..." : "✦ Generate SQL"}
+            </button>
+          </section>
+
+          {error && (
+            <div className="alert error">
+              <strong>Error:</strong> {error}
+            </div>
+          )}
+
+          {message && (
+            <div className="alert success">
+              {message}
+            </div>
+          )}
+
+          {generated && (
+            <section className="result-section">
+              <div className="section-heading">
+                <div>
+                  <h3>Generated SQL</h3>
+                  <p>Review or edit the query before running it.</p>
+                </div>
+                <span className="readonly-badge">SELECT ONLY</span>
+              </div>
+
+              <textarea
+                className="sql-editor"
+                value={sql}
+                onChange={(e) => setSql(e.target.value)}
+                rows={8}
+                spellCheck={false}
+              />
+
+              <button
+                className="execute-button"
+                onClick={executeSQL}
+                disabled={executing}
+              >
+                {executing ? "Executing..." : "▶ Execute Query"}
+              </button>
+            </section>
+          )}
+
+          {hasResults && (
+            <section className="result-section">
+              <div className="section-heading">
+                <div>
+                  <h3>Query Results</h3>
+                  <p>{rows.length} records returned</p>
+                </div>
+
+                <div className="result-actions">
+                  <span className="result-count">
+                    {rows.length} Rows
+                  </span>
+
+                  {columns.length > 0 && (
+                    <button
+                      className="execute-button"
+                      onClick={downloadCSV}
+                    >
+                      ↓ Download CSV
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {columns.length === 0 ? (
+                <p>No columns or records returned.</p>
+              ) : rows.length === 0 ? (
+                <p>No records found for this query.</p>
+              ) : (
+                <div className="table-container">
+                  <table>
+                    <thead>
+                      <tr>
+                        {columns.map((column) => (
+                          <th key={column}>{column}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {rows.map((row, index) => (
+                        <tr key={index}>
+                          {columns.map((column) => (
+                            <td key={column}>
+                              {row[column] === null
+                                ? "NULL"
+                                : typeof row[column] === "object"
+                                  ? JSON.stringify(row[column])
+                                  : String(row[column])}
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </section>
+          )}
+
+        </div>
+
+        {/* RIGHT SIDE: Fixed sidebar containing Schema and History */}
+        <aside className="sidebar">
+
           <section className="history-section">
             <div className="section-heading">
               <div>
-                <h3>Query History</h3>
-                <p>Your recent executed queries in this session.</p>
+                <h3>Schema Explorer</h3>
+                <p>Explore available database tables and columns.</p>
               </div>
 
               <button
                 className="text-button"
-                onClick={() => setHistory([])}
+                onClick={loadSchema}
+                disabled={schemaLoading}
               >
-                Clear history
+                {schemaLoading ? "Loading..." : "↻ Refresh"}
               </button>
             </div>
 
-            {history.map((item) => (
-              <button
-                className="history-item"
-                key={item.id}
-                onClick={() => loadHistory(item)}
-              >
-                <div>
-                  <strong>{item.question || "Manual SQL query"}</strong>
-                  <span>{item.time} · {item.rowCount} rows</span>
-                </div>
-                <span>View →</span>
-              </button>
-            ))}
+            {Object.keys(schema).length === 0 ? (
+              <p>
+                {schemaLoading
+                  ? "Loading database schema..."
+                  : "No tables found."}
+              </p>
+            ) : (
+              <div className="schema-list">
+                {Object.entries(schema).map(([tableName, tableColumns]) => (
+                  <div className="schema-table" key={tableName}>
+                    <button
+                      className="history-item"
+                      onClick={() =>
+                        setExpandedTable(
+                          expandedTable === tableName ? "" : tableName
+                        )
+                      }
+                    >
+                      <div>
+                        <strong>▣ {tableName}</strong>
+                        <span>{tableColumns.length} columns</span>
+                      </div>
+                      <span>
+                        {expandedTable === tableName ? "−" : "+"}
+                      </span>
+                    </button>
+
+                    {expandedTable === tableName && (
+                      <div className="schema-columns">
+                        {tableColumns.map((column) => (
+                          <div
+                            className="schema-column"
+                            key={column.column}
+                          >
+                            <span>{column.column}</span>
+                            <span>{column.type}</span>
+                            {column.key && (
+                              <span className="readonly-badge">
+                                {column.key === "PRI"
+                                  ? "PRIMARY KEY"
+                                  : column.key}
+                              </span>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
           </section>
-        )}
+
+          {history.length > 0 && (
+            <section className="history-section">
+              <div className="section-heading">
+                <div>
+                  <h3>Query History</h3>
+                  <p>Your recent executed queries in this session.</p>
+                </div>
+
+                <button
+                  className="text-button"
+                  onClick={() => setHistory([])}
+                >
+                  Clear history
+                </button>
+              </div>
+
+              {history.map((item) => (
+                <button
+                  className="history-item"
+                  key={item.id}
+                  onClick={() => loadHistory(item)}
+                >
+                  <div>
+                    <strong>{item.question || "Manual SQL query"}</strong>
+                    <span>{item.time} · {item.rowCount} rows</span>
+                  </div>
+                  <span>View →</span>
+                </button>
+              ))}
+            </section>
+          )}
+
+        </aside>
 
         <footer>
           QueryAI · Built with React, Flask, MySQL and Gemini AI
